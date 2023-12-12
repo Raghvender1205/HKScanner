@@ -9,7 +9,7 @@ import Dispatch
 import Foundation
 import os
 
-class CaptureFolderManager: ObservableObject {
+public class CaptureFolderManager: ObservableObject {
     static let logger = Logger(subsystem: _DScannerApp.subsystem,
                                 category: "CaptureFolderManager")
 
@@ -30,7 +30,7 @@ class CaptureFolderManager: ObservableObject {
 
     @Published var shots: [ShotFileInfo] = []
 
-    init?() {
+    public init?() { // Public to access this class
         guard let newFolder = CaptureFolderManager.createNewScanDirectory() else {
             logger.error("Unable to create a new scan directory.")
             return nil

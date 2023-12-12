@@ -17,16 +17,16 @@ public class CaptureFolderManager: ObservableObject {
 
     // The top-level capture directory that contains Images and Snapshots subdirectories.
     // This sample automatically creates this directory at `init()` with timestamp.
-    let rootScanFolder: URL
+    public let rootScanFolder: URL
 
     // Subdirectory of `rootScanFolder` for images
-    let imagesFolder: URL
+    public let imagesFolder: URL
 
     // Subdirectory of `rootScanFolder` for snapshots
-    let snapshotsFolder: URL
+    public let snapshotsFolder: URL
 
     // Subdirectory to output model files.
-    let modelsFolder: URL
+    public let modelsFolder: URL
 
     @Published var shots: [ShotFileInfo] = []
 

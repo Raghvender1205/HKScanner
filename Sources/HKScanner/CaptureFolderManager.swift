@@ -54,7 +54,7 @@ public class CaptureFolderManager: ObservableObject {
         }
     }
 
-    func loadShots() async throws {
+    public func loadShots() async throws {
         logger.debug("Loading snapshots (async)...")
 
         var newShots: [ShotFileInfo] = []
@@ -84,7 +84,7 @@ public class CaptureFolderManager: ObservableObject {
     ///
     /// - Parameter url: URL of the photo for which this method returns the image id.
     /// - Returns: The image ID if `url` is valid; otherwise `nil`.
-    static func parseShotId(url: URL) -> UInt32? {
+    public static func parseShotId(url: URL) -> UInt32? {
         let photoBasename = url.deletingPathExtension().lastPathComponent
         logger.debug("photoBasename = \(photoBasename)")
 
@@ -109,7 +109,7 @@ public class CaptureFolderManager: ObservableObject {
     }
 
     // Returns the basename for file with the given `id`.
-    static func imageIdString(for id: UInt32) -> String {
+    public static func imageIdString(for id: UInt32) -> String {
         return String(format: "%@%04d", imageStringPrefix, id)
     }
 
@@ -120,7 +120,7 @@ public class CaptureFolderManager: ObservableObject {
     ///   - outputDir: The directory where the capture session saves images.
     ///   - id: Identifier of an image.
     /// - Returns: `outputDir` URL if the image exists
-    static func heicImageUrl(in outputDir: URL, id: UInt32) -> URL {
+    public static func heicImageUrl(in outputDir: URL, id: UInt32) -> URL {
         return outputDir
             .appendingPathComponent(imageIdString(for: id))
             .appendingPathExtension(heicImageExtension)
@@ -129,7 +129,7 @@ public class CaptureFolderManager: ObservableObject {
     /// Creates a new Scans directory based on the current timestamp in the top level Documents
     /// folder.
     /// - Returns: The new Scans folder's file URL, or `nil` on error.
-    static func createNewScanDirectory() -> URL? {
+    public static func createNewScanDirectory() -> URL? {
         guard let capturesFolder = rootScansFolder() else {
             logger.error("Can't get user document dir!")
             return nil
@@ -165,7 +165,7 @@ public class CaptureFolderManager: ObservableObject {
     /// - Returns: A Boolean value that indicates whether the method succeeds,
     /// otherwise `false` if it encounters an error, such as if the file already
     /// exists or the method couldn't create the file.
-    private static func createDirectoryRecursively(_ outputDir: URL) -> Bool {
+    public static func createDirectoryRecursively(_ outputDir: URL) -> Bool {
         guard outputDir.isFileURL else {
             return false
         }
@@ -197,11 +197,11 @@ public class CaptureFolderManager: ObservableObject {
     }
 
     // Constants this sample appends in front of the capture id to get a file basename.
-    private static let imageStringPrefix = "IMG_"
-    private static let heicImageExtension = "HEIC"
+    public static let imageStringPrefix = "IMG_"
+    public static let heicImageExtension = "HEIC"
 
     /// Returns the app documents folder for all our captures.
-    private static func rootScansFolder() -> URL? {
+    public static func rootScansFolder() -> URL? {
         guard let documentsFolder =
                 try? FileManager.default.url(for: .documentDirectory,
                                              in: .userDomainMask,

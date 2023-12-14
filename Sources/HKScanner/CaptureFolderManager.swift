@@ -210,4 +210,16 @@ public class CaptureFolderManager: ObservableObject {
         }
         return documentsFolder.appendingPathComponent("Scans/", isDirectory: true)
     }
+    
+    public func getFirstImage() -> URL? {
+        do {
+            let imageFiles = try FileManager.default.contentsOfDirectory(at: imagesFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])
+            let sortedFiles = imageFiles.filter { $0.pathExtension == "heic" }.sorted { $0.lastPathComponent < $1.lastPathComponent }
+            
+            return sortedFiles.first
+        } catch {
+            logger.error("Failed to get images from folder: \(error.localizedDescription)")
+            return nil
+        }
+    }
 }

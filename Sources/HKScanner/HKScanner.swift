@@ -81,7 +81,7 @@ private struct CircularProgressView: View {
 
 #if DEBUG
 @available(iOS 17.0, *)
-struct USDZScanner_Previews: PreviewProvider {
+struct HKScanner_Previews: PreviewProvider {
     static var previews: some View {
         HKScanner() { url in }
     }

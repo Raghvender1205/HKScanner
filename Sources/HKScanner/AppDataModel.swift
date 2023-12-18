@@ -13,7 +13,7 @@ import os
 @MainActor
 @available(iOS 17.0, *)
 public class AppDataModel: ObservableObject, Identifiable {
-    let logger = Logger(subsystem: _DScannerApp.subsystem,
+    public let logger = Logger(subsystem: _DScannerApp.subsystem,
                                 category: "AppDataModel")
 
     public static let instance = AppDataModel()
@@ -21,7 +21,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// The session that manages the object capture phase.
     ///
     /// Set the correct folder locations for the capture session using ``scanFolderManager``.
-    @Published var objectCaptureSession: ObjectCaptureSession? {
+    @Published public var objectCaptureSession: ObjectCaptureSession? {
         willSet {
             detachListeners()
         }
@@ -31,21 +31,21 @@ public class AppDataModel: ObservableObject, Identifiable {
         }
     }
 
-    static let minNumImages = 10
+    public static let minNumImages = 10
 
-    static let bundleForLocalizedStrings = { return Bundle.module }()
+    public static let bundleForLocalizedStrings = { return Bundle.module }()
 
     /// The object that manages the reconstruction process of a set of images of an object into a 3D model.
     ///
     /// When the ``ReconstructionPrimaryView`` is active, hold the session here.
-    private(set) var photogrammetrySession: PhotogrammetrySession?
+    public(set) var photogrammetrySession: PhotogrammetrySession?
 
     /// The folder set when a new capture session starts.
-    private(set) var scanFolderManager: CaptureFolderManager!
+    public(set) var scanFolderManager: CaptureFolderManager!
 
-    @Published var messageList = TimedMessageList()
+    @Published public var messageList = TimedMessageList()
 
-    @Published var state: ModelState = .notSet {
+    @Published public var state: ModelState = .notSet {
         didSet {
             logger.debug("didSet AppDataModel.state to \(self.state)")
 
@@ -55,13 +55,13 @@ public class AppDataModel: ObservableObject, Identifiable {
         }
     }
 
-    @Published var orbitState: OrbitState = .initial
-    @Published var orbit: Orbit = .orbit1
-    @Published var isObjectFlipped: Bool = false
+    @Published public var orbitState: OrbitState = .initial
+    @Published public var orbit: Orbit = .orbit1
+    @Published public var isObjectFlipped: Bool = false
 
-    var hasIndicatedObjectCannotBeFlipped: Bool = false
-    var hasIndicatedFlipObjectAnyway: Bool = false
-    var isObjectFlippable: Bool {
+    public var hasIndicatedObjectCannotBeFlipped: Bool = false
+    public var hasIndicatedFlipObjectAnyway: Bool = false
+    public var isObjectFlippable: Bool {
         // Overrides the `objectNotFlippable` feedback if the user indicates
         // the object can flip or if they want to flip the object anyway.
         guard !hasIndicatedObjectCannotBeFlipped else { return false }
@@ -73,7 +73,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// The error that indicates the object capture session failed.
     ///
     /// This error moves  ``state`` to ``ModelState/failed``.
-    private(set) var error: Swift.Error?
+    public(set) var error: Swift.Error?
 
     /// A Boolean value that determines whether the view shows a preview model.
     ///
@@ -83,15 +83,15 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// the ``objectCaptureSession`` while showing the ``CapturePrimaryView``.
     /// Alternatively, hiding the ``CapturePrimaryView`` pauses the
     /// ``objectCaptureSession``.
-    @Published private(set) var showPreviewModel = false
+    @Published public(set) var showPreviewModel = false
 
-    private init(objectCaptureSession: ObjectCaptureSession) {
+    public init(objectCaptureSession: ObjectCaptureSession) {
         self.objectCaptureSession = objectCaptureSession
         state = .ready
     }
 
     // Leaves the model state in ready.
-     private init() {
+     public init() {
         state = .ready
     }
 
@@ -107,7 +107,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// inform the app it can go back to the new capture view.
     /// You can also call ``endCapture()`` after a canceled or failed
     /// reconstruction to go back to the start screen.
-    func endCapture() {
+    public func endCapture() {
         state = .completed
     }
 
@@ -115,7 +115,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     // remains on screen and blurred underneath, it doesn't pause.  So, pause
     // the `objectCaptureSession` after showing the model and start it before
     // dismissing the model.
-    func setPreviewModelState(shown: Bool) {
+    public func setPreviewModelState(shown: Bool) {
         guard shown != showPreviewModel else { return }
         if shown {
             showPreviewModel = true
@@ -128,15 +128,15 @@ public class AppDataModel: ObservableObject, Identifiable {
 
     // - MARK: Private Interface
 
-    private var currentFeedback: Set<Feedback> = []
+    public var currentFeedback: Set<Feedback> = []
 
-    private typealias Feedback = ObjectCaptureSession.Feedback
-    private typealias Tracking = ObjectCaptureSession.Tracking
+    public typealias Feedback = ObjectCaptureSession.Feedback
+    public typealias Tracking = ObjectCaptureSession.Tracking
     
-    private var tasks: [ Task<Void, Never> ] = []
+    public var tasks: [ Task<Void, Never> ] = []
 
     @MainActor
-    private func attachListeners() {
+    public func attachListeners() {
         logger.debug("Attaching listeners...")
         guard let model = objectCaptureSession else {
             fatalError("Logic error")
@@ -158,7 +158,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         })
     }
 
-    private func detachListeners() {
+    public func detachListeners() {
         logger.debug("Detaching listeners...")
         for task in tasks {
             task.cancel()
@@ -167,7 +167,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     }
 
     /// Creates a new object capture session.
-    private func startNewCapture() -> Bool {
+    public func startNewCapture() -> Bool {
         logger.log("startNewCapture() called...")
         if !ObjectCaptureSession.isSupported {
             preconditionFailure("ObjectCaptureSession is not supported on this device!")
@@ -203,7 +203,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         return true
     }
 
-    private func switchToErrorState(error: Swift.Error) {
+    public func switchToErrorState(error: Swift.Error) {
         // Sets the error first since the transitions assume it's non-`nil`.
         self.error = error
         state = .failed
@@ -215,7 +215,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     ///
     /// See ``ModelState/prepareToReconstruct``
     /// and ``ModelState/reconstructing``.
-    private func startReconstruction() throws {
+    public func startReconstruction() throws {
         logger.debug("startReconstruction() called.")
 
         var configuration = PhotogrammetrySession.Configuration()
@@ -227,7 +227,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         state = .reconstructing
     }
 
-    private func reset() {
+    public func reset() {
         logger.info("reset() called...")
         photogrammetrySession = nil
         objectCaptureSession = nil
@@ -239,7 +239,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         state = .ready
     }
 
-    private func onStateChanged(newState: ObjectCaptureSession.CaptureState) {
+    public func onStateChanged(newState: ObjectCaptureSession.CaptureState) {
         logger.info("ObjectCaptureSession switched to state: \(String(describing: newState))")
         if case .completed = newState {
             logger.log("ObjectCaptureSession moved to .completed state.  Switch app model to reconstruction...")
@@ -254,7 +254,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         }
     }
 
-    private func updateFeedbackMessages(for feedback: Set<Feedback>) {
+    public func updateFeedbackMessages(for feedback: Set<Feedback>) {
         // Compares the incoming feedback with the previous feedback to find
         // the intersection.
         let persistentFeedback = currentFeedback.intersection(feedback)
@@ -278,7 +278,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         currentFeedback = feedback
     }
 
-    private func performStateTransition(from fromState: ModelState, to toState: ModelState) {
+    public func performStateTransition(from fromState: ModelState, to toState: ModelState) {
         if fromState == .failed {
             error = nil
         }
@@ -318,7 +318,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         }
     }
 
-    func determineCurrentOnboardingState() -> OnboardingState? {
+    public func determineCurrentOnboardingState() -> OnboardingState? {
         guard let session = objectCaptureSession else { return nil }
         let orbitCompleted = session.userCompletedScanPass
         var currentState = OnboardingState.tooFewImages
@@ -337,8 +337,8 @@ public class AppDataModel: ObservableObject, Identifiable {
 
 }
 
-extension AppDataModel {
-    enum LocString {
+public extension AppDataModel {
+    public enum LocString {
         static let segment1FeedbackString = NSLocalizedString(
             "Move slowly around your object. (Object Capture, Segment, Feedback)",
             bundle: bundleForLocalizedStrings,

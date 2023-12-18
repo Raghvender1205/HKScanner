@@ -41,7 +41,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     private(set) var photogrammetrySession: PhotogrammetrySession?
 
     /// The folder set when a new capture session starts.
-    private(set) var scanFolderManager: CaptureFolderManager!
+    public private(set) var scanFolderManager: CaptureFolderManager!
 
     @Published var messageList = TimedMessageList()
 

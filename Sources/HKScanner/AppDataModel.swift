@@ -12,7 +12,7 @@ import os
 
 @MainActor
 @available(iOS 17.0, *)
-class AppDataModel: ObservableObject, Identifiable {
+public class AppDataModel: ObservableObject, Identifiable {
     let logger = Logger(subsystem: _DScannerApp.subsystem,
                                 category: "AppDataModel")
 

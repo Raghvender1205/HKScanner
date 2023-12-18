@@ -213,8 +213,13 @@ public class CaptureFolderManager: ObservableObject {
     
     public func getFirstImage() -> URL? {
         do {
+            logger.log("Accessing images directory at \(imagesFolder.path)")
             let imageFiles = try FileManager.default.contentsOfDirectory(at: imagesFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])
-            let sortedFiles = imageFiles.filter { $0.pathExtension == "heic" }.sorted { $0.lastPathComponent < $1.lastPathComponent }
+            logger.log("Number of image files found: \(imageFiles.count)")
+            let sortedFiles = imageFiles.filter { $0.pathExtension.lowercased() == "heic" }.sorted { $0.lastPathComponent < $1.lastPathComponent }
+            if sortedFiles.isEmpty {
+                logger.error("No image files found in directory")
+            }
             
             return sortedFiles.first
         } catch {

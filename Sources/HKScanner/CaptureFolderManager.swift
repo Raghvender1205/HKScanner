@@ -213,26 +213,26 @@ public class CaptureFolderManager: ObservableObject {
     
     public func getFirstImage() -> URL? {
         do {
-            // Get the list of image URLs in the images directory
-            let imgUrls = try FileManager.default.contentsOfDirectory(
-                at: imagesFolder,
-                includingPropertiesForKeys: [],
-                options: [.skipsHiddenFiles]
-            ).filter { $0.isFileURL && $0.lastPathComponent.hasSuffix(CaptureFolderManager.heicImageExtension) }
+            let imageFiles = try FileManager.default.contentsOfDirectory(at: imagesFolder, includingPropertiesForKeys: [], options: [.skipsHiddenFiles])
+            logger.log("Total files found: \(imageFiles.count)")
+            
+            let heicFiles = imageFiles.filter { $0.pathExtension == "heic" }
+            // Log the number of HEIC files found
+            logger.log("HEIC files found: \(heicFiles.count)")
 
-            // Sort the URLs based on the shot ID extracted from the file name
-            let sortedImgUrls = imgUrls.sorted { url1, url2 in
-                guard let id1 = CaptureFolderManager.parseShotId(url: url1),
-                      let id2 = CaptureFolderManager.parseShotId(url: url2) else {
-                    return false
-                }
-                return id1 < id2
+            let sortedFiles = heicFiles.sorted { $0.lastPathComponent < $1.lastPathComponent }
+            
+            // Log the first file URL if available
+            if let firstFile = sortedFiles.first {
+                logger.log("First file URL: \(firstFile)")
+            } else {
+                logger.log("No HEIC files found in the directory")
             }
-
-            // Return the first URL in the sorted list
-            return sortedImgUrls.first
+            
+            return sortedFiles.first
         } catch {
             logger.error("Failed to get images from folder: \(error.localizedDescription)")
+            
             return nil
         }
     }

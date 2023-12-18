@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension AppDataModel {
+public extension AppDataModel {
     enum ModelState: String, CustomStringConvertible {
         var description: String { rawValue }
 

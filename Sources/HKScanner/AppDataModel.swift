@@ -16,7 +16,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     let logger = Logger(subsystem: _DScannerApp.subsystem,
                                 category: "AppDataModel")
 
-    static let instance = AppDataModel()
+    public static let instance = AppDataModel()
 
     /// The session that manages the object capture phase.
     ///

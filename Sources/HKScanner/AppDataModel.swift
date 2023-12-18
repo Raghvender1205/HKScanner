@@ -38,12 +38,12 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// The object that manages the reconstruction process of a set of images of an object into a 3D model.
     ///
     /// When the ``ReconstructionPrimaryView`` is active, hold the session here.
-    public(set) var photogrammetrySession: PhotogrammetrySession?
+    private(set) var photogrammetrySession: PhotogrammetrySession?
 
     /// The folder set when a new capture session starts.
-    public(set) var scanFolderManager: CaptureFolderManager!
+    private(set) var scanFolderManager: CaptureFolderManager!
 
-    @Published public var messageList = TimedMessageList()
+    @Published var messageList = TimedMessageList()
 
     @Published public var state: ModelState = .notSet {
         didSet {
@@ -55,9 +55,9 @@ public class AppDataModel: ObservableObject, Identifiable {
         }
     }
 
-    @Published public var orbitState: OrbitState = .initial
-    @Published public var orbit: Orbit = .orbit1
-    @Published public var isObjectFlipped: Bool = false
+    @Published var orbitState: OrbitState = .initial
+    @Published var orbit: Orbit = .orbit1
+    @Published var isObjectFlipped: Bool = false
 
     public var hasIndicatedObjectCannotBeFlipped: Bool = false
     public var hasIndicatedFlipObjectAnyway: Bool = false
@@ -73,7 +73,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// The error that indicates the object capture session failed.
     ///
     /// This error moves  ``state`` to ``ModelState/failed``.
-    public(set) var error: Swift.Error?
+    private(set) var error: Swift.Error?
 
     /// A Boolean value that determines whether the view shows a preview model.
     ///
@@ -83,7 +83,7 @@ public class AppDataModel: ObservableObject, Identifiable {
     /// the ``objectCaptureSession`` while showing the ``CapturePrimaryView``.
     /// Alternatively, hiding the ``CapturePrimaryView`` pauses the
     /// ``objectCaptureSession``.
-    @Published public(set) var showPreviewModel = false
+    @Published private(set) var showPreviewModel = false
 
     public init(objectCaptureSession: ObjectCaptureSession) {
         self.objectCaptureSession = objectCaptureSession
@@ -318,7 +318,7 @@ public class AppDataModel: ObservableObject, Identifiable {
         }
     }
 
-    public func determineCurrentOnboardingState() -> OnboardingState? {
+    func determineCurrentOnboardingState() -> OnboardingState? {
         guard let session = objectCaptureSession else { return nil }
         let orbitCompleted = session.userCompletedScanPass
         var currentState = OnboardingState.tooFewImages

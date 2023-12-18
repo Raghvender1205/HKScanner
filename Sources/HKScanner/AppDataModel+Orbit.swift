@@ -8,7 +8,7 @@
 import UIKit
 
 public extension AppDataModel {
-    public enum Orbit: Int, CaseIterable, Identifiable, Comparable {
+    enum Orbit: Int, CaseIterable, Identifiable, Comparable {
         case orbit1, orbit2, orbit3
 
         var id: Int {

@@ -9,7 +9,7 @@ import Foundation
 
 public extension AppDataModel {
     public enum ModelState: String, CustomStringConvertible {
-        var description: String { rawValue }
+        public var description: String { rawValue }
 
         case notSet
         case ready

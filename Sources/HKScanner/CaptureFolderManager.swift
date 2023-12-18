@@ -211,7 +211,7 @@ public class CaptureFolderManager: ObservableObject {
         return documentsFolder.appendingPathComponent("Scans/", isDirectory: true)
     }
     
-    public func getFirstImage() {
+    public func getFirstImage() -> URL? {
         let imgUrls = try? FileManager.default
             .contentsOfDirectory(at: imagesFolder,
                                  includingPropertiesForKeys: [],

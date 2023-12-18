@@ -213,13 +213,26 @@ public class CaptureFolderManager: ObservableObject {
     
     public func getFirstImage() -> URL? {
         do {
-            let imgUrls = try FileManager.default
-                .contentsOfDirectory(at: imagesFolder, includingPropertiesForKeys: [], options: [.skipsHiddenFiles])
-                .filter { $0.isFileURL && $0.lastPathComponent.hasSuffix(CaptureFolderManager.heicImageExtension) }
-            
-            return imgUrls.first
+            // Get the list of image URLs in the images directory
+            let imgUrls = try FileManager.default.contentsOfDirectory(
+                at: imagesFolder,
+                includingPropertiesForKeys: [],
+                options: [.skipsHiddenFiles]
+            ).filter { $0.isFileURL && $0.lastPathComponent.hasSuffix(CaptureFolderManager.heicImageExtension) }
+
+            // Sort the URLs based on the shot ID extracted from the file name
+            let sortedImgUrls = imgUrls.sorted { url1, url2 in
+                guard let id1 = CaptureFolderManager.parseShotId(url: url1),
+                      let id2 = CaptureFolderManager.parseShotId(url: url2) else {
+                    return false
+                }
+                return id1 < id2
+            }
+
+            // Return the first URL in the sorted list
+            return sortedImgUrls.first
         } catch {
-            logger.error("Error accessing the images directory: \(error.localizedDescription)")
+            logger.error("Failed to get images from folder: \(error.localizedDescription)")
             return nil
         }
     }

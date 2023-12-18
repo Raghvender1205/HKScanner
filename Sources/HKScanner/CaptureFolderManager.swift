@@ -212,7 +212,7 @@ public class CaptureFolderManager: ObservableObject {
     }
     
     public func getFirstImage() -> URL? {
-        let imgUrls = try FileManager.default
+        let imgUrls = try? FileManager.default
             .contentsOfDirectory(at: imagesFolder,
                                  includingPropertiesForKeys: [],
                                  options: [.skipsHiddenFiles])
